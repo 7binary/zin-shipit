@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = (server, repositoryUrl, projectDir, branch = 'main') => (shipit) => {
   require('shipit-deploy')(shipit);
   require('shipit-shared')(shipit);
@@ -5,12 +7,16 @@ module.exports = (server, repositoryUrl, projectDir, branch = 'main') => (shipit
   shipit.initConfig({
     default: {
       deployTo: `/home/webuser/${projectDir}`,
-      key: '~/.ssh/id_rsa',
+      key: '~/.ssh/ZIN_IS.pem',
       repositoryUrl,
       branch,
       ignores: ['.git', 'node_modules'],
       keepReleases: 3,
       deleteOnRollback: true,
+      shared: {
+        overwrite: true,
+        files: ['.env'],
+      },
     },
     prod: { servers: server },
   });
