@@ -24,19 +24,30 @@ module.exports = (server, repositoryUrl, projectDir, branch = 'main') => (shipit
         files: ['.env'],
       },
     },
-    prod: { servers: server },
+    prod: {
+      servers: server,
+    },
   });
 
   // DEPLOY
   shipit.on('updated', () => shipit.start(
-    'spa.install', 'spa.build',
+    'go.build', 'go.restart',
   ));
 
   // COMMANDS
-  shipit.blTask('spa.install', async () => {
-    await shipit.remote(`pnpm -C "${shipit.releasePath}" install --prefer-offline`);
+  shipit.blTask('go.restart', async () => {
+    await shipit.remote(`sudo systemctl restart ${projectDir}`);
   });
-  shipit.blTask('spa.build', async () => {
-    await shipit.remote(`pnpm -C "${shipit.releasePath}" build`);
+
+  shipit.blTask('go.build', async () => {
+    const cwd = shipit.releasePath;
+    await shipit.remote('/usr/local/go/bin/go mod tidy', { cwd });
+    await shipit.remote('/usr/local/go/bin/go generate ./...', { cwd });
+    await shipit.remote('/usr/local/go/bin/go build', { cwd });
+  });
+
+  shipit.blTask('go.releaser', async () => {
+    const cwd = shipit.releasePath;
+    await shipit.remote('goreleaser build --snapshot', { cwd });
   });
 };

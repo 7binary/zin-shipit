@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "portfolio:prod": "shipit prod deploy --shipitfile ci/portfolio-prod.js"
+    "portfolio": "shipit prod deploy --shipitfile ci/portfolio-prod.js",
+    "go-auth": "shipit prod deploy --shipitfile ci/go-auth-prod.js"
   },
   "keywords": [],
   "author": "",
