@@ -12,7 +12,7 @@ Description=go-auth
 
 [Service]
 WorkingDirectory=/home/webuser/go-auth/current
-ExecStart=/home/webuser/go-auth/current/auth
+ExecStart=/home/webuser/go-auth/current/go-auth
 Type=simple
 Restart=always
 RestartSec=5s

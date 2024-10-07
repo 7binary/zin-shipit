@@ -31,14 +31,10 @@ module.exports = (server, repositoryUrl, projectDir, branch = 'main') => (shipit
 
   // DEPLOY
   shipit.on('updated', () => shipit.start(
-    'go.build', 'go.restart',
+    'go.build', 'go.migrate', 'go.restart',
   ));
 
   // COMMANDS
-  shipit.blTask('go.restart', async () => {
-    await shipit.remote(`sudo systemctl restart ${projectDir}`);
-  });
-
   shipit.blTask('go.build', async () => {
     const cwd = shipit.releasePath;
     await shipit.remote('/usr/local/go/bin/go mod tidy', { cwd });
@@ -46,8 +42,17 @@ module.exports = (server, repositoryUrl, projectDir, branch = 'main') => (shipit
     await shipit.remote('/usr/local/go/bin/go build', { cwd });
   });
 
+  shipit.blTask('go.migrate', async () => {
+    const cwd = shipit.releasePath;
+    await shipit.remote('/usr/local/go/bin/go run migrate/migrate.go', { cwd });
+  });
+
   shipit.blTask('go.releaser', async () => {
     const cwd = shipit.releasePath;
     await shipit.remote('goreleaser build --snapshot', { cwd });
+  });
+
+  shipit.blTask('go.restart', async () => {
+    await shipit.remote(`sudo systemctl restart ${projectDir}`);
   });
 };
