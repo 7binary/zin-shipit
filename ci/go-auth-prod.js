@@ -5,8 +5,10 @@ module.exports = require('./_build_go')(
 );
 
 /*
-0. sudo su
-1. nano /lib/systemd/system/go-auth.service
+0. sudo nano /etc/sudoers
+webuser ALL=(ALL) NOPASSWD:/bin/systemctl
+
+1. sudo nano /lib/systemd/system/go-auth.service
 [Unit]
 Description=go-auth
 
